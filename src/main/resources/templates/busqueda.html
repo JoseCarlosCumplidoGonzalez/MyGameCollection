@@ -75,12 +75,21 @@
       <h1>Resultados encontrados: "<span th:text="${titulos.size}"></span>"</h1>
       <div class="row">
         <div class="col-sm-3" th:each="titulo : ${titulos}">
-          <a href="#" th:href="@{/titulo/{id}(id=${titulo.id})}">
+          <a th:href="@{/titulo/{id}(id=${titulo.id})}">
+
             <div class="col-item">
+
               <div class="photo">
-                <img src="http://placehold.it/350x260"
-                     th:src="${#strings.isEmpty(titulo.imagen)} ? 'http://placehold.it/350x260' : ${titulo.imagen}"
-                     class="img-responsive" alt="a" />
+                <img class="img-responsive"
+                     th:src="${#strings.isEmpty(titulo.imagen)} ?
+                                           '/img/notfound.png' : '/img/games/' + ${titulo.imagen}"
+                     alt="Imagen del juego">
+              </div>
+
+              <div class="info">
+                <h4 class="product-name" th:text="${titulo.nombre}">
+                  Nombre del juego
+                </h4>
               </div>
             </div>
           </a>

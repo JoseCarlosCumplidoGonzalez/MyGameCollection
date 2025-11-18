@@ -4,23 +4,11 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title>MyGameCollection</title>
 
-
   <!-- Bootstrap -->
-  <link
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          rel="stylesheet" >
-  <link href="../static/css/style.css" th:href="@{/css/style.css}"
-        rel="stylesheet" />
-
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
 </head>
 <body>
 
@@ -30,52 +18,125 @@
       <button type="button" class="navbar-toggle collapsed"
               data-toggle="collapse" data-target="#navbar" aria-expanded="false"
               aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span> <span
-              class="icon-bar"></span> <span class="icon-bar"></span> <span
-              class="icon-bar"></span>
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">ZooTopia</a>
+      <a class="navbar-brand" th:href="@{/}">MyGameCollection</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown"><a href="#" class="dropdown-toggle"
-                                data-toggle="dropdown" role="button" aria-haspopup="true"
-                                aria-expanded="false">Opciones <span class="caret"></span></a>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+             aria-haspopup="true" aria-expanded="false">Opciones <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="/admin/familia/" th:href="@{/admin/familia/}">Gestión
-              de familias</a></li>
-            <li><a href="/admin/titulo/" th:href="@{/admin/titulo/}">Gestión
-              de titulos</a></li>
-          </ul></li>
+            <li><a th:href="@{/admin/plataforma/}">Gestión de plataformas</a></li>
+            <li><a th:href="@{/admin/titulo/}">Gestión de títulos</a></li>
+          </ul>
+        </li>
       </ul>
     </div>
   </div>
 </nav>
 
 <div class="container">
+
+  <!-- Cabecera con imagen y nombre -->
   <div class="row">
     <div class="col-md-4">
-      <img src="http://placehold.it/400x400" alt=""
-           th:src="${#strings.isEmpty(titulo.imagen)} ? 'http://placehold.it/350x260' : ${titulo.imagen}"
-           class="img-responsive" />
+      <img class="img-responsive"
+           th:src="${#strings.isEmpty(titulo.imagen)} ?
+                 '/img/notfound.png' : '/img/games/' + ${titulo.imagen}"
+           alt="Carátula del juego">
     </div>
+
     <div class="col-md-8">
-      <h1 class="titulo" th:text="${titulo.nombre}">Nombre del titulo</h1>
+      <h1 class="titulo" th:text="${titulo.nombre}">Nombre del título</h1>
+
+      <!-- Metadatos principales -->
+      <table class="table table-striped">
+        <tbody>
+        <tr>
+          <th style="width: 220px;">SLES / Código</th>
+          <td th:text="${titulo.sles} ?: '—'">SLES1234</td>
+        </tr>
+        <tr>
+          <th>Fecha de lanzamiento</th>
+          <td th:text="${titulo.fechaLanzamiento} != null ? ${#temporals.format(titulo.fechaLanzamiento,'dd/MM/yyyy')} : '—'">01/01/2000</td>
+        </tr>
+        <tr>
+          <th>Plataforma</th>
+          <td th:text="${titulo.plataforma != null} ? ${titulo.plataforma.nombre} : '—'">PlayStation 2</td>
+        </tr>
+        <tr>
+          <th>Fabricante</th>
+          <td th:text="${titulo.plataforma != null} ? ${titulo.plataforma.fabricante} : '—'">Sony</td>
+        </tr>
+        <tr>
+          <th>Región</th>
+          <td th:text="${titulo.region != null} ? ${titulo.region.nombre} : '—'">PAL</td>
+        </tr>
+        <tr>
+          <th>Géneros</th>
+          <td>
+            <span th:if="${#lists.isEmpty(titulo.generos)}">—</span>
+            <span th:if="${!#lists.isEmpty(titulo.generos)}"
+                  th:each="g, stat : ${titulo.generos}">
+              <span th:text="${g.nombre}">Acción</span><span th:if="${!stat.last}">, </span>
+            </span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </div>
+
+  <!-- Descripción -->
   <div class="row">
     <div class="col-md-12">
-      <h3>Características</h3>
-      <p th:text="${titulo.descripcion}">Descripción</p>
+      <h3>Descripción</h3>
+      <p th:text="${#strings.isEmpty(titulo.descripcion)} ? '—' : titulo.descripcion">Descripción del juego…</p>
     </div>
   </div>
+
+  <!-- Observaciones (opcional) -->
+  <div class="row" th:if="${!#strings.isEmpty(titulo.observacion)}">
+    <div class="col-md-12">
+      <h3>Observaciones</h3>
+      <p th:text="${titulo.observacion}">Observaciones…</p>
+    </div>
+  </div>
+
+  <!-- Trailer (si lo hay): si es URL se enlaza, si es MP4 se intenta embeber -->
+  <div class="row" th:if="${!#strings.isEmpty(titulo.trailer)}">
+    <div class="col-md-12">
+      <h3>Tráiler</h3>
+
+      <!-- Si es un mp4 directo, muestra <video>. No intentamos detectar YouTube; si es YT/URL genérica, dejamos botón -->
+      <div th:if="${#strings.endsWith(#strings.toLowerCase(titulo.trailer), '.mp4')}">
+        <video controls style="max-width:100%; height:auto;" th:src="${titulo.trailer}">
+          Tu navegador no soporta el elemento de vídeo.
+        </video>
+      </div>
+
+      <div th:unless="${#strings.endsWith(#strings.toLowerCase(titulo.trailer), '.mp4')}">
+        <a class="btn btn-primary" th:href="${titulo.trailer}" target="_blank" rel="noopener">
+          Ver tráiler
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-md-12">
+      <a class="btn btn-default" th:href="@{/}">&larr; Volver</a>
+    </div>
+  </div>
+
 </div>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
 </html>
