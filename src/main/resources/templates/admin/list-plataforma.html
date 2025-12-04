@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title>Plataformas</title>
 
   <!-- Bootstrap -->
@@ -24,7 +23,7 @@
 
   <style>
     body {
-      margin-top: 20px;
+      margin-top: 70px;
     }
   </style>
 </head>
@@ -36,23 +35,44 @@
       <button type="button" class="navbar-toggle collapsed"
               data-toggle="collapse" data-target="#navbar" aria-expanded="false"
               aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span> <span
-              class="icon-bar"></span> <span class="icon-bar"></span> <span
-              class="icon-bar"></span>
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="/">MyGameCollection</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown"><a href="#" class="dropdown-toggle"
-                                data-toggle="dropdown" role="button" aria-haspopup="true"
-                                aria-expanded="false">Opciones <span class="caret"></span></a>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle"
+             data-toggle="dropdown" role="button" aria-haspopup="true"
+             aria-expanded="false">
+            Opciones <span class="caret"></span>
+          </a>
           <ul class="dropdown-menu">
-            <li><a href="/admin/plataforma/" th:href="@{/admin/plataforma/}">Gestión
-              de plataformas</a></li>
-            <li><a href="/admin/titulo/" th:href="@{/admin/titulo/}">Gestión
-              de titulos</a></li>
-          </ul></li>
+            <li>
+              <a th:href="@{/admin/plataforma/}">
+                Gestión de plataformas
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/admin/titulo/}">
+                Gestión de títulos
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/admin/genero/}">
+                Gestión de géneros
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/admin/region/}">
+                Gestión de regiones
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
 
     </div>
@@ -63,24 +83,40 @@
 <div class="container">
   <div class="row">
     <div class="col-md-offset-2 col-md-8">
-      <div class="pull-right">
-        <a href="form-plataforma.html" th:href="@{/admin/plataforma/nueva}"
-           class="btn btn-primary">Nueva plataforma</a>
 
+      <div class="pull-right" style="margin-bottom: 15px;">
+        <a th:href="@{/admin/plataforma/nueva}"
+           class="btn btn-primary">
+          Nueva plataforma
+        </a>
       </div>
-      <table class="table">
+
+      <table class="table table-striped">
         <thead>
         <tr>
           <th>Nombre</th>
-          <th>Operaciones</th>
+          <th style="width: 220px;">Operaciones</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="plataforma : ${plataformas}">
           <td th:text="${plataforma.nombre}"></td>
-          <td class="operaciones"><a href="#" class="btn btn-primary">Editar</a>
-            <button type="button" class="btn btn-danger" data-toggle="modal"
-                    data-target="#delete-modal">Borrar</button></td>
+          <td class="operaciones">
+            <!-- Editar -->
+            <a th:href="@{/admin/plataforma/editar/{id}(id=${plataforma.id})}"
+               class="btn btn-primary">
+              Editar
+            </a>
+
+            <!-- Borrar abre modal y pasa id + nombre -->
+            <button type="button"
+                    class="btn btn-danger"
+                    data-toggle="modal"
+                    data-target="#delete-modal"
+                    th:attr="data-id=${plataforma.id},data-nombre=${plataforma.nombre}">
+              Borrar
+            </button>
+          </td>
         </tr>
         </tbody>
       </table>
@@ -88,9 +124,11 @@
   </div>
 </div>
 
+<!-- Modal de borrado -->
 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
+
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"
                 aria-label="Close">
@@ -98,13 +136,29 @@
         </button>
         <h4 class="modal-title">Borrar plataforma</h4>
       </div>
-      <div class="modal-body">
-        <p>¿Está usted seguro de borrar esta plataforma?</p>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-        <a href="#" class="btn btn-danger">Sí</a>
-      </div>
-    </div>
 
+      <div class="modal-body">
+        <p>
+          ¿Está usted seguro de borrar la plataforma
+          <strong id="plataforma-nombre"></strong>?
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-default"
+                data-dismiss="modal">
+          No
+        </button>
+        <!-- Este enlace se rellena por JS -->
+        <a href="#"
+           class="btn btn-danger"
+           id="confirmDelete">
+          Sí
+        </a>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -114,7 +168,23 @@
 <script
         src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+<script>
+  // Lógica del modal de borrado
+  $('#delete-modal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);      // botón que abrió el modal
+    var id = button.data('id');               // data-id
+    var nombre = button.data('nombre');       // data-nombre
 
+    // Mostrar el nombre en el modal
+    $('#plataforma-nombre').text(nombre);
+
+    // Construir URL de borrado
+    var url = '/admin/plataforma/borrar/' + id;
+
+    // Asignar URL al botón "Sí"
+    $('#confirmDelete').attr('href', url);
+  });
+</script>
 
 </body>
 </html>

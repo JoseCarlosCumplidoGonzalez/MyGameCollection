@@ -49,11 +49,28 @@
                                 data-toggle="dropdown" role="button" aria-haspopup="true"
                                 aria-expanded="false">Opciones <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="admin/list-plataforma.html"
-                   th:href="@{/admin/plataforma/}">Gestión de plataformas</a></li>
-            <li><a href="admin/list-titulo.html"
-                   th:href="@{/admin/titulo/}">Gestión de titulos</a></li>
-          </ul></li>
+            <li>
+              <a th:href="@{/admin/plataforma/}">
+                Gestión de plataformas
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/admin/titulo/}">
+                Gestión de títulos
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/admin/genero/}">
+                Gestión de generos
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/admin/region/}">
+                Gestión de regiones
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
   </div>

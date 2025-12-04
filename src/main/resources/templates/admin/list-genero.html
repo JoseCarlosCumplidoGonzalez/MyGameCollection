@@ -1,10 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Géneros</title>
+
+    <!-- Bootstrap -->
+    <link
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            rel="stylesheet">
+
+    <link href="../../static/css/style.css" th:href="@{/css/style.css}"
+          rel="stylesheet" />
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        body {
+            margin-top: 70px;
+        }
+    </style>
 </head>
 <body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">MyGameCollection</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle"
+                       data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">
+                        Opciones <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a th:href="@{/admin/plataforma/}">
+                                Gestión de plataformas
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/admin/titulo/}">
+                                Gestión de títulos
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/admin/genero/}">
+                                Gestión de géneros
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/admin/region/}">
+                                Gestión de regiones
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+
+            <div class="pull-right" style="margin-bottom: 15px;">
+                <a th:href="@{/admin/genero/nueva}"
+                   class="btn btn-primary">
+                    Nuevo género
+                </a>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th style="width: 220px;">Operaciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="genero : ${generos}">
+                    <td th:text="${genero.nombre}"></td>
+                    <td class="operaciones">
+                        <a th:href="@{/admin/genero/editar/{id}(id=${genero.id})}"
+                           class="btn btn-primary">
+                            Editar
+                        </a>
+
+                        <!-- Botón que abre el modal y pasa el id y el nombre -->
+                        <button type="button"
+                                class="btn btn-danger"
+                                data-toggle="modal"
+                                data-target="#delete-modal"
+                                th:attr="data-id=${genero.id},data-nombre=${genero.nombre}">
+                            Borrar
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de borrado -->
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Borrar género</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    ¿Está usted seguro de borrar el género
+                    <strong id="genero-nombre"></strong>?
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal">
+                    No
+                </button>
+                <!-- Este enlace lo rellenamos por JS con la URL correcta -->
+                <a href="#"
+                   class="btn btn-danger"
+                   id="confirmDelete">
+                    Sí
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+    // Cuando se abre el modal de borrar
+    $('#delete-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);          // Botón que abrió el modal
+        var id = button.data('id');                   // data-id del botón
+        var nombre = button.data('nombre');           // data-nombre del botón
+
+        // Rellenamos el texto con el nombre del género
+        $('#genero-nombre').text(nombre);
+
+        // Construimos la URL de borrado
+        var url = '/admin/genero/borrar/' + id;
+
+        // Asignamos la URL al botón "Sí"
+        $('#confirmDelete').attr('href', url);
+    });
+</script>
 
 </body>
 </html>

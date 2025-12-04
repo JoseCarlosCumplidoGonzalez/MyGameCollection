@@ -1,10 +1,164 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Regiones</title>
+
+    <!-- Bootstrap -->
+    <link
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            rel="stylesheet">
+
+    <link href="../../static/css/style.css" th:href="@{/css/style.css}"
+          rel="stylesheet" />
+
+    <style>
+        body {
+            margin-top: 70px;
+        }
+    </style>
 </head>
 <body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">MyGameCollection</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle"
+                       data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">
+                        Opciones <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/admin/plataforma/}">Gestión de plataformas</a></li>
+                        <li><a th:href="@{/admin/titulo/}">Gestión de títulos</a></li>
+                        <li><a th:href="@{/admin/genero/}">Gestión de géneros</a></li>
+                        <li><a th:href="@{/admin/region/}">Gestión de regiones</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+
+            <div class="pull-right" style="margin-bottom: 15px;">
+                <a th:href="@{/admin/region/nueva}"
+                   class="btn btn-primary">Nueva región</a>
+            </div>
+
+            <h1>Listado de regiones</h1>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th style="width: 220px;">Operaciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="region : ${regiones}">
+                    <td th:text="${region.nombre}">Nombre región</td>
+                    <td class="operaciones">
+
+                        <!-- Editar -->
+                        <a th:href="@{/admin/region/editar/{id}(id=${region.id})}"
+                           class="btn btn-primary">Editar</a>
+
+                        <!-- Borrar abre modal -->
+                        <button type="button"
+                                class="btn btn-danger"
+                                data-toggle="modal"
+                                data-target="#delete-modal"
+                                th:attr="data-id=${region.id},data-nombre=${region.nombre}">
+                            Borrar
+                        </button>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal de borrado -->
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Borrar región</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    ¿Está seguro que desea borrar la región
+                    <strong id="region-nombre"></strong>?
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal">No</button>
+
+                <!-- Este enlace se rellenará por JS -->
+                <a href="#"
+                   class="btn btn-danger"
+                   id="confirmDelete">
+                    Sí
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+    // -------- Modal de borrado dinámico --------
+    $('#delete-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);      // Botón que abrió el modal
+        var id = button.data('id');               // data-id del botón
+        var nombre = button.data('nombre');       // data-nombre
+
+        // Mostrar nombre en el modal
+        $('#region-nombre').text(nombre);
+
+        // Construir URL de borrado
+        var url = '/admin/region/borrar/' + id;
+
+        // Asignar URL al botón "Sí"
+        $('#confirmDelete').attr('href', url);
+    });
+</script>
 
 </body>
 </html>

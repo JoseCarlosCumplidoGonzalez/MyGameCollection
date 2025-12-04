@@ -30,15 +30,13 @@ public class PlataformaController {
 
     @GetMapping("/nueva")
     public String nuevaPlataforma(Model model) {
-        model.addAttribute("plataformas", new Plataforma());
+        model.addAttribute("plataforma", new Plataforma());
         return "admin/form-plataforma";
     }
 
     @PostMapping("/nueva/submit")
-    public String submitNuevaPlataforma(@ModelAttribute("plataforma") Plataforma plataforma, Model model) {
-
+    public String submitNuevaPlataforma(@ModelAttribute("plataforma") Plataforma plataforma) {
         plataformaService.save(plataforma);
-
         return "redirect:/admin/plataforma/";
     }
 
@@ -56,18 +54,12 @@ public class PlataformaController {
     }
 
     @GetMapping("/borrar/{id}")
-    public String borrarPlataforma(@PathVariable("id") Integer id, Model model) {
-
+    public String borrarPlataforma(@PathVariable("id") Integer id) {
         Plataforma plataforma = plataformaService.findById(id);
-
         if (plataforma != null) {
-
-            if (tituloService.numeroTitulosPlataforma(plataforma) == 0) {
-                plataformaService.delete(plataforma);
-            } else {
-                return "redirect:/admin/damilia/?error=true";
-            }
+            plataformaService.delete(plataforma);
         }
         return "redirect:/admin/plataforma/";
     }
+
 }

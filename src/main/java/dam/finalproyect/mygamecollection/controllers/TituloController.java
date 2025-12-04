@@ -63,11 +63,12 @@ public class TituloController {
     }
 
     @GetMapping("/borrar/{id}")
-    public String borrarTitulo(@PathVariable("id") Long id, Model model) {
+    public String borrarTitulo(@PathVariable("id") Long id) {
         Titulo titulo = tituloService.findById(id);
         if (titulo != null) {
             tituloService.delete(titulo);
         }
         return "redirect:/admin/titulo/";
     }
+
 }
