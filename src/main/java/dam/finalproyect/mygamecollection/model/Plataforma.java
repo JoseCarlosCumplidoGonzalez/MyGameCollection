@@ -2,6 +2,7 @@ package dam.finalproyect.mygamecollection.model;
 
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -19,6 +20,7 @@ public class Plataforma {
 
     private String fabricante;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fechaLanzamiento;
 
     public Plataforma() {}

@@ -38,7 +38,7 @@
     <div>
       <form class="form-inline" th:action="@{/}">
         <div class="form-group mx-sm-3 mb-2">
-          <input type="text" name="palabraClave" class="form-control" id="palabraClave" th:value="${palabraClave}" placeholder="nombre o parte de la observacion (sensible a mayusculas y minusculas)" required size="75">
+          <input type="text" name="palabraClave" class="form-control" id="palabraClave" th:value="${palabraClave}" placeholder="titulo o parte de la observacion (sensible a mayusculas y minusculas)" required size="75">
         </div>
         <input type="submit" class="btn btn-primary mb-2" value="buscar">
       </form>
@@ -67,6 +67,11 @@
             <li>
               <a th:href="@{/admin/region/}">
                 Gestión de regiones
+              </a>
+            </li>
+            <li>
+              <a th:href="@{/admin/importar-exportar}">
+                Importar y exportar
               </a>
             </li>
           </ul>

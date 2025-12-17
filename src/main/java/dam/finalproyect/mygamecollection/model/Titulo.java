@@ -1,6 +1,7 @@
 package dam.finalproyect.mygamecollection.model;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -22,7 +23,8 @@ public class Titulo {
 
     private String trailer;
 
-    @Column(name = "fecha_lanzamiento")
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fechaLanzamiento;
 
 

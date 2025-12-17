@@ -17,8 +17,16 @@ public class GeneroService {
         return generoRepository.findAll();
     }
 
+    public List<Genero> findAllByIds(List<Integer> ids) {
+        return generoRepository.findAllById(ids);
+    }
+
     public Genero save(Genero genero) {
         return generoRepository.save(genero);
+    }
+
+    public List<Genero> findAllById(List<Integer> ids) {
+        return generoRepository.findAllById(ids);
     }
 
     public Genero findById(Integer id) {
@@ -27,7 +35,10 @@ public class GeneroService {
 
     public Genero delete(Genero genero) {
         Genero result = findById(genero.getId());
-        generoRepository.delete(result);
+        if (result != null) {
+            generoRepository.delete(result);
+        }
         return result;
     }
+
 }

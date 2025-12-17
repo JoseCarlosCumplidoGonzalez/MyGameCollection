@@ -37,7 +37,7 @@
                            class="form-control"
                            id="palabraClave"
                            th:value="${palabraClave}"
-                           placeholder="Buscar título"
+                           placeholder="titulo o parte de la observacion (sensible a mayusculas y minusculas)"
                            size="75">
                 </div>
                 <input type="submit" class="btn btn-primary mb-2" value="Buscar">
@@ -73,6 +73,11 @@
                         <li>
                             <a th:href="@{/admin/region/}">
                                 Gestión de regiones
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/admin/importar-exportar}">
+                                Importar y exportar
                             </a>
                         </li>
                     </ul>

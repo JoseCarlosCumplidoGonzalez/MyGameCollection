@@ -49,6 +49,11 @@
                 Gestión de regiones
               </a>
             </li>
+            <li>
+              <a th:href="@{/admin/importar-exportar}">
+                Importar y exportar
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
@@ -112,7 +117,7 @@
   <div class="row">
     <div class="col-md-12">
       <h3>Descripción</h3>
-      <p th:text="${#strings.isEmpty(titulo.descripcion)} ? '—' : titulo.descripcion">Descripción del juego…</p>
+      <p th:text="${#strings.isEmpty(titulo.descripcion)} ? '' : ${titulo.descripcion}"alt="Descripción del juego…"></p>
     </div>
   </div>
 

@@ -15,6 +15,7 @@ public class TituloService {
     @Autowired
     private TituloRepository tituloRepository;
 
+
     public List<Titulo> findAll() {
         return tituloRepository.findAll();
     }
