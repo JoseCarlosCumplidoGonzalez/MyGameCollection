@@ -20,9 +20,17 @@
     <![endif]-->
 
     <style>
-        body {
-            margin-top: 70px;
+        body { margin-top: 70px; }
+
+        /* miniatura en listado */
+        .thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ddd;
         }
+        .td-img { width: 80px; }
     </style>
 </head>
 <body>
@@ -80,15 +88,24 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
+                    <th class="td-img">Imagen</th>
                     <th>Nombre</th>
                     <th style="width: 220px;">Operaciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="titulo : ${titulos}">
-                    <td th:text="${titulo.nombre}">Nombre del título</td>
-                    <td class="operaciones">
+                    <!-- Imagen (con fallback a notfound.png si está vacío) -->
+                    <td class="td-img">
+                        <img class="img-responsive"
+                             th:src="${#strings.isEmpty(titulo.imagen)} ?
+                 '/img/notfound.png' : '/img/games/' + ${titulo.imagen}"
+                             alt="Carátula del juego">
+                    </td>
 
+                    <td th:text="${titulo.nombre}">Nombre del título</td>
+
+                    <td class="operaciones">
                         <a th:href="@{/admin/titulo/editar/{id}(id=${titulo.id})}"
                            class="btn btn-primary">
                             Editar
@@ -101,7 +118,6 @@
                                 th:attr="data-id=${titulo.id},data-nombre=${titulo.nombre}">
                             Borrar
                         </button>
-
                     </td>
                 </tr>
                 </tbody>

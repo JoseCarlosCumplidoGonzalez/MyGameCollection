@@ -5,148 +5,167 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title th:text="${titulo != null and titulo.id != null} ? 'Editar título' : 'Nuevo título'">Título</title>
+  <title th:text="${titulo.id} != null ? 'Editar título' : 'Nuevo título'">Título</title>
 
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
-
-  <style>
-    body { margin-top: 80px; }
-    .checkbox-grid .checkbox { margin-top: 0; }
-  </style>
+  <!-- Bootstrap -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        rel="stylesheet">
+  <link th:href="@{/css/style.css}" rel="stylesheet"/>
 </head>
+
 <body>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed"
-              data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-              aria-controls="navbar">
+              data-toggle="collapse" data-target="#navbar">
         <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="/">MyGameCollection</a>
     </div>
-
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-             aria-expanded="false">Opciones <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{/admin/plataforma/}">Gestión de plataformas</a></li>
-            <li><a th:href="@{/admin/titulo/}">Gestión de títulos</a></li>
-            <li><a th:href="@{/admin/genero/}">Gestión de géneros</a></li>
-            <li><a th:href="@{/admin/region/}">Gestión de regiones</a></li>
-            <li><a th:href="@{/admin/importar-exportar}">Importar y exportar</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-
   </div>
 </nav>
 
-<div class="container">
+<div class="container" style="margin-top:80px;">
   <div class="row">
     <div class="col-md-offset-2 col-md-8">
 
-      <h1>
-        <span th:text="${titulo != null and titulo.id != null} ? 'Editar título' : 'Nuevo título'"></span>
-      </h1>
+      <h1 th:text="${titulo.id} != null ? 'Editar título' : 'Nuevo título'"></h1>
 
-      <!-- OJO: tu controller tiene /nuevo/submit, NO /nueva/submit -->
       <form method="post"
             th:action="@{/admin/titulo/nuevo/submit}"
             th:object="${titulo}">
 
-        <!-- ID oculto para edición -->
-        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{id}"/>
 
+        <!-- NOMBRE -->
         <div class="form-group">
-          <label class="control-label" for="nombre">Nombre</label>
-          <input type="text" class="form-control" id="nombre"
-                 th:field="*{nombre}" placeholder="Nombre del juego"/>
+          <label>Nombre</label>
+          <input type="text" class="form-control"
+                 th:field="*{nombre}" required/>
         </div>
 
+        <!-- SLES -->
         <div class="form-group">
-          <label class="control-label" for="sles">SLES</label>
-          <input type="text" class="form-control" id="sles"
-                 th:field="*{sles}" placeholder="SLES..."/>
+          <label>SLES</label>
+          <input type="text" class="form-control"
+                 th:field="*{sles}"/>
         </div>
 
-        <!-- Imagen: dejo type=text para permitir /img/xxx.png o URL -->
+        <!-- IMAGEN -->
         <div class="form-group">
-          <label class="control-label" for="imagen">Imagen (URL o ruta /img/...)</label>
-          <input type="text" class="form-control" id="imagen"
-                 th:field="*{imagen}" placeholder="https://...  o  /img/miImagen.png"/>
-          <p class="help-block">Si lo dejas vacío, se mostrará la imagen genérica en el front.</p>
+          <label>Imagen</label>
+
+          <input type="text"
+                 class="form-control"
+                 th:field="*{imagen}"
+                 id="imagen"
+                 readonly/>
+
+          <br>
+
+          <button type="button"
+                  class="btn btn-default"
+                  onclick="document.getElementById('imagenFile').click()">
+            Añadir imagen
+          </button>
+
+          <input type="file"
+                 id="imagenFile"
+                 accept="image/*"
+                 style="display:none;">
         </div>
 
-        <!-- Trailer: dejo type=text para permitir vacío sin bloquear -->
+        <!-- TRAILER -->
         <div class="form-group">
-          <label class="control-label" for="trailer">Tráiler (opcional)</label>
-          <input type="text" class="form-control" id="trailer"
-                 th:field="*{trailer}" placeholder="https://... (opcional)"/>
+          <label>Trailer</label>
+          <input type="text" class="form-control"
+                 th:field="*{trailer}"/>
         </div>
 
+        <!-- FECHA -->
         <div class="form-group">
-          <label class="control-label" for="fechaLanzamiento">Fecha de lanzamiento</label>
-          <input type="date" class="form-control" id="fechaLanzamiento"
+          <label>Fecha de lanzamiento</label>
+          <input type="date" class="form-control"
                  th:field="*{fechaLanzamiento}"/>
         </div>
 
+        <!-- DESCRIPCIÓN -->
         <div class="form-group">
-          <label class="control-label" for="descripcion">Descripción</label>
-          <textarea class="form-control" id="descripcion" rows="3"
-                    th:field="*{descripcion}"></textarea>
+          <label>Descripción</label>
+          <textarea class="form-control"
+                    th:field="*{descripcion}"
+                    rows="4"></textarea>
         </div>
 
+        <!-- OBSERVACIONES -->
         <div class="form-group">
-          <label class="control-label" for="observacion">Observación</label>
-          <textarea class="form-control" id="observacion" rows="3"
-                    th:field="*{observacion}"></textarea>
+          <label>Observaciones</label>
+          <textarea class="form-control"
+                    th:field="*{observacion}"
+                    rows="3"></textarea>
         </div>
 
-        <!-- Plataforma -->
+        <!-- PLATAFORMA -->
         <div class="form-group">
-          <label class="control-label" for="plataforma">Plataforma</label>
-          <select id="plataforma" class="form-control" th:field="*{plataforma}">
+          <label>Plataforma</label>
+          <select class="form-control" th:field="*{plataforma}">
             <option value="">---</option>
-            <option th:each="p : ${plataformas}" th:value="${p.id}" th:text="${p.nombre}"></option>
+            <option th:each="p : ${plataformas}"
+                    th:value="${p.id}"
+                    th:text="${p.nombre}"></option>
           </select>
         </div>
 
-        <!-- Región -->
+        <!-- REGIÓN -->
         <div class="form-group">
-          <label class="control-label" for="region">Región</label>
-          <select id="region" class="form-control" th:field="*{region}">
+          <label>Región</label>
+          <select class="form-control" th:field="*{region}">
             <option value="">---</option>
-            <option th:each="r : ${regiones}" th:value="${r.id}" th:text="${r.nombre}"></option>
+            <option th:each="r : ${regiones}"
+                    th:value="${r.id}"
+                    th:text="${r.nombre}"></option>
           </select>
         </div>
 
-        <!-- Géneros: enviamos ids (sin converter) -->
+        <!-- GÉNEROS (2 COLUMNAS) -->
         <div class="form-group">
-          <label class="control-label">Géneros</label>
+          <label>Géneros</label>
 
-          <div class="row checkbox-grid">
-            <div class="col-sm-6" th:each="g : ${generos}">
+          <div class="row">
+            <div class="col-md-6"
+                 th:each="g, stat : ${generos}"
+                 th:if="${stat.index % 2 == 0}">
               <div class="checkbox">
                 <label>
                   <input type="checkbox"
-                         name="generoIds"
                          th:value="${g.id}"
-                         th:checked="${titulo.generos != null && titulo.generos.contains(g)}"/>
-                  <span th:text="${g.nombre}">Género</span>
+                         th:field="*{generos}">
+                  <span th:text="${g.nombre}"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-md-6"
+                 th:each="g, stat : ${generos}"
+                 th:if="${stat.index % 2 == 1}">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"
+                         th:value="${g.id}"
+                         th:field="*{generos}">
+                  <span th:text="${g.nombre}"></span>
                 </label>
               </div>
             </div>
           </div>
-
-          <p class="help-block">Puedes marcar varios géneros.</p>
         </div>
+
+        <hr>
 
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a th:href="@{/admin/titulo/}" class="btn btn-default">Cancelar</a>
@@ -159,5 +178,14 @@
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+  document.getElementById('imagenFile').addEventListener('change', function () {
+    if (this.files.length > 0) {
+      document.getElementById('imagen').value = this.files[0].name;
+    }
+  });
+</script>
+
 </body>
 </html>
