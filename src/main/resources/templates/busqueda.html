@@ -4,107 +4,217 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title>MyGameCollection</title>
 
   <!-- Bootstrap -->
-  <link
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          rel="stylesheet">
-  <link href="../static/css/style.css" th:href="@{/css/style.css}"
-        rel="stylesheet" />
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/style.css}" rel="stylesheet" />
 
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
+  <!-- Estilos del botón de acciones (3 puntos) -->
+  <style>
+    .col-item { position: relative; }
+
+    .item-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 20;
+    }
+
+    .item-actions .btn {
+      padding: 4px 8px;
+    }
+
+    .item-actions .dropdown-menu {
+      left: auto;
+      right: 0;
+      min-width: 140px;
+    }
+
+    .item-actions .glyphicon {
+      font-size: 14px;
+    }
+  </style>
 </head>
+
 <body>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
+
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed"
-              data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-              aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span> <span
-              class="icon-bar"></span> <span class="icon-bar"></span> <span
-              class="icon-bar"></span>
+              data-toggle="collapse" data-target="#navbar"
+              aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">MyGameCollection</a>
+
+      <a class="navbar-brand" th:href="@{/}">MyGameCollection</a>
     </div>
-    <div>
+
+    <!-- Form búsqueda -->
+    <div class="navbar-form navbar-left">
       <form class="form-inline" th:action="@{/}">
-        <div class="form-group mx-sm-3 mb-2">
-          <input type="text" name="palabraClave" class="form-control" id="palabraClave" th:value="${palabraClave}" placeholder="titulo o parte de la observacion (sensible a mayusculas y minusculas)" required size="75">
+        <div class="form-group">
+          <input type="text"
+                 name="palabraClave"
+                 class="form-control"
+                 id="palabraClave"
+                 th:value="${palabraClave}"
+                 placeholder="titulo o parte de la observacion (sensible a mayusculas y minusculas)"
+                 size="55">
         </div>
-        <input type="submit" class="btn btn-primary mb-2" value="buscar">
+        <input type="submit" class="btn btn-primary" value="Buscar">
       </form>
     </div>
+
+    <!-- Menú colapsable: admin + plataformas en móvil -->
     <div id="navbar" class="navbar-collapse collapse">
+
+      <!-- ✅ PLATAFORMAS SOLO EN MÓVIL -->
+      <ul class="nav navbar-nav visible-xs">
+        <li class="dropdown-header" style="color:#9d9d9d; padding-left: 15px;">
+          Plataformas
+        </li>
+        <li th:each="plataforma : ${plataformas}">
+          <a class="mobile-platform-link"
+             th:href="@{/(idPlataforma=${plataforma.id})}"
+             th:text="${plataforma.nombre}">Plataforma</a>
+        </li>
+        <li role="separator" class="divider"></li>
+      </ul>
+
+      <!-- ✅ ADMIN A LA DERECHA -->
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown"><a href="#" class="dropdown-toggle"
-                                data-toggle="dropdown" role="button" aria-haspopup="true"
-                                aria-expanded="false">Opciones <span class="caret"></span></a>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle"
+             data-toggle="dropdown" role="button"
+             aria-haspopup="true" aria-expanded="false">
+            Opciones <span class="caret"></span>
+          </a>
           <ul class="dropdown-menu">
-            <li>
-              <a th:href="@{/admin/plataforma/}">
-                Gestión de plataformas
-              </a>
-            </li>
-            <li>
-              <a th:href="@{/admin/titulo/}">
-                Gestión de títulos
-              </a>
-            </li>
-            <li>
-              <a th:href="@{/admin/genero/}">
-                Gestión de generos
-              </a>
-            </li>
-            <li>
-              <a th:href="@{/admin/region/}">
-                Gestión de regiones
-              </a>
-            </li>
-            <li>
-              <a th:href="@{/admin/importar-exportar}">
-                Importar y exportar
-              </a>
-            </li>
+            <li><a th:href="@{/admin/plataforma/}">Gestión de plataformas</a></li>
+            <li><a th:href="@{/admin/titulo/}">Gestión de títulos</a></li>
+            <li><a th:href="@{/admin/genero/}">Gestión de géneros</a></li>
+            <li><a th:href="@{/admin/region/}">Gestión de regiones</a></li>
+            <li><a th:href="@{/admin/importar-exportar}">Importar y exportar</a></li>
           </ul>
         </li>
       </ul>
+
     </div>
   </div>
 </nav>
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-3 col-md-2 sidebar">
-      <h3>Plataformas</h3>
+
+    <!-- SIDEBAR PLATAFORMAS (SOLO ESCRITORIO) -->
+    <div class="col-sm-3 col-md-2 sidebar hidden-xs">
+
+      <!-- 🔥 CABECERA CON BOTÓN + -->
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <h3 style="margin:0;">Plataformas</h3>
+
+        <a th:href="@{/admin/plataforma/nueva}"
+           class="btn btn-xs btn-primary"
+           title="Añadir plataforma">
+          <span class="glyphicon glyphicon-plus"></span>
+        </a>
+      </div>
+
+      <hr style="margin:10px 0;">
+
       <ul class="nav nav-sidebar">
-        <li th:each="plataforma : ${plataformas}"><a href="#"
-                                               th:href="@{/(idPlataforma=${plataforma.id})}"
-                                               th:text="${plataforma.nombre}">plataforma</a></li>
+        <li th:each="plataforma : ${plataformas}">
+          <a th:href="@{/(idPlataforma=${plataforma.id})}"
+             th:text="${plataforma.nombre}">
+          </a>
+        </li>
       </ul>
     </div>
 
-    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-         th:if="${titulos.size}">
-      <h1>Resultados encontrados: "<span th:text="${titulos.size}"></span>"</h1>
-      <div class="row">
-        <div class="col-sm-3" th:each="titulo : ${titulos}">
-          <a th:href="@{/titulo/{id}(id=${titulo.id})}">
+    <!-- ✅ Main -->
+    <div class="col-xs-12 col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
-            <div class="col-item">
+      <!-- Espacio extra en móvil -->
+      <div class="visible-xs" style="height:15px;"></div>
+
+
+
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+        <h1>
+          Resultados encontrados:
+          "<span th:text="${titulos.size}">0</span>"
+        </h1>
+
+        <a th:href="@{/admin/titulo/nuevo}"
+           class="btn btn-primary"
+           title="Añadir nuevo título">
+          <span class="glyphicon glyphicon-plus"></span> Nuevo título
+        </a>
+        <a th:href="@{/admin/genero/nueva}"
+           class="btn btn-primary"
+           title="Añadir nuevo genero">
+          <span class="glyphicon glyphicon-plus"></span> Nuevo genero
+        </a>
+        <a th:href="@{/admin/region/nueva}"
+           class="btn btn-primary"
+           title="Añadir nueva region">
+          <span class="glyphicon glyphicon-plus"></span> Nueva region
+        </a>
+      </div>
+
+
+      <!-- ✅ Con resultados -->
+      <div class="row" th:if="${titulos.size}">
+        <!-- ✅ MISMO GRID QUE INDEX -->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+             th:each="titulo : ${titulos}">
+
+          <div class="col-item">
+
+            <!-- 🔥 BOTÓN 3 PUNTOS -->
+            <div class="item-actions dropdown">
+              <button type="button"
+                      class="btn btn-default btn-xs dropdown-toggle"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      title="Opciones">
+                <span class="glyphicon glyphicon-option-vertical"></span>
+              </button>
+
+              <ul class="dropdown-menu">
+                <li>
+                  <a th:href="@{/admin/titulo/editar/{id}(id=${titulo.id})}">
+                    <span class="glyphicon glyphicon-pencil"></span> Editar
+                  </a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li>
+                  <a href="#"
+                     data-toggle="modal"
+                     data-target="#delete-modal"
+                     th:attr="data-id=${titulo.id},data-nombre=${titulo.nombre}">
+                    <span class="glyphicon glyphicon-trash"></span> Eliminar
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Link al detalle -->
+            <a th:href="@{/titulo/{id}(id=${titulo.id})}"
+               style="text-decoration:none; color:inherit;">
 
               <div class="photo">
                 <img class="img-responsive"
-                     th:src="${#strings.isEmpty(titulo.imagen)} ?
-                                           '/img/notfound.png' : '/img/games/' + ${titulo.imagen}"
+                     th:src="${#strings.isEmpty(titulo.imagen)}
+                              ? '/img/notfound.png'
+                              : '/img/games/' + ${titulo.imagen}"
                      alt="Imagen del juego">
               </div>
 
@@ -113,28 +223,78 @@
                   Nombre del juego
                 </h4>
               </div>
-            </div>
-          </a>
+
+            </a>
+          </div>
+
         </div>
       </div>
-    </div>
-    <div class="row mt-5" th:unless="${titulos.size}">
-      <div class="col-12">
-        <div>
-          <h2>
-            <center>"No hay resultados en la busqueda realizada"</center>
-          </h2>
-        </div>
+
+      <!-- ✅ Sin resultados -->
+      <div th:unless="${titulos.size}" style="margin-top: 25px;">
+        <h2 class="text-center">No hay resultados en la búsqueda realizada</h2>
       </div>
+
     </div>
 
   </div>
 </div>
+
+<!-- ================= MODAL BORRAR ================= -->
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title">Eliminar título</h4>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          ¿Estás seguro de eliminar el título
+          <strong id="titulo-nombre"></strong>?
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Cancelar
+        </button>
+        <a href="#"
+           class="btn btn-danger"
+           id="confirmDeleteTitulo">
+          Eliminar
+        </a>
+      </div>
+
+    </div>
+  </div>
 </div>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+  // Cierra el menú hamburguesa al pulsar en una plataforma (móvil)
+  $(document).on('click', '.mobile-platform-link', function () {
+    $('#navbar').collapse('hide');
+  });
+
+  // Modal borrar: rellena nombre y URL
+  $('#delete-modal').on('show.bs.modal', function (event) {
+    var link = $(event.relatedTarget);
+    var id = link.data('id');
+    var nombre = link.data('nombre');
+
+    $('#titulo-nombre').text(nombre);
+    $('#confirmDeleteTitulo').attr('href', '/admin/titulo/borrar/' + id);
+  });
+</script>
+
 </body>
 </html>

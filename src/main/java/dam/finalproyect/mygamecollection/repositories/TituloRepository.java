@@ -15,12 +15,12 @@ public interface TituloRepository extends JpaRepository<Titulo, Long> {
     @Query("select e.id from Titulo e")
     public List<Long> obtenerIds();
 
-    @Query("select e from Titulo e where e.plataforma.id = ?1")
+    @Query("select e from Titulo e where e.plataforma.id = ?1 order by e.nombre asc")
     public List<Titulo> findByPlataformaId(Long plataformaId);
 
     @Query("select count(e) from Titulo e where e.plataforma = ?1")
     public int findNumTitulosByPlataforma(Plataforma plataforma);
 
-    @Query("SELECT e FROM Titulo e WHERE e.nombre LIKE %?1% OR e.observacion LIKE %?1%")
+    @Query("SELECT e FROM Titulo e WHERE e.nombre LIKE %?1% OR e.observacion LIKE %?1% order by e.nombre asc")
     public List<Titulo> findBySearch(String palabraClave);
 }

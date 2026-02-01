@@ -4,25 +4,55 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>MyGameCollection</title>
 
     <!-- Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           rel="stylesheet">
 
-    <!-- CSS propio -->
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
+
+    <!-- Estilos del botón de acciones (3 puntos) -->
+    <style>
+        /* Para que el dropdown se coloque arriba a la derecha dentro de la caja */
+        .col-item { position: relative; }
+
+        .item-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 20;
+        }
+
+        .item-actions .btn {
+            padding: 4px 8px;
+        }
+
+        .item-actions .dropdown-menu {
+            left: auto;
+            right: 0;
+            min-width: 140px;
+        }
+
+        /* Evita que el icono de opciones “robe” espacio visual */
+        .item-actions .glyphicon {
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
 
+<!-- ================= NAVBAR ================= -->
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
 
+        <!-- Header -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed"
-                    data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
+                    data-toggle="collapse"
+                    data-target="#navbarMain">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -32,77 +62,150 @@
             <a class="navbar-brand" href="/">MyGameCollection</a>
         </div>
 
-        <div>
+        <!-- Form búsqueda -->
+        <div class="navbar-form navbar-left">
             <form class="form-inline" th:action="@{/}">
-                <div class="form-group mx-sm-3 mb-2">
+                <div class="form-group">
                     <input type="text"
                            name="palabraClave"
                            class="form-control"
                            id="palabraClave"
                            th:value="${palabraClave}"
-                           placeholder="título o parte de la observación"
-                           size="75">
+                           placeholder="titulo o parte de la observacion (sensible a mayusculas y minusculas)"
+                           size="55">
                 </div>
-                <input type="submit"
-                       class="btn btn-primary mb-2"
-                       value="Buscar">
+                <input type="submit" class="btn btn-primary" value="Buscar">
             </form>
         </div>
 
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
+        <!-- Menú principal -->
+        <div id="navbarMain" class="collapse navbar-collapse">
 
+            <!-- Opciones admin -->
+            <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle"
-                       data-toggle="dropdown" role="button"
-                       aria-haspopup="true" aria-expanded="false">
+                       data-toggle="dropdown">
                         Opciones <span class="caret"></span>
                     </a>
-
                     <ul class="dropdown-menu">
                         <li><a th:href="@{/admin/plataforma/}">Gestión de plataformas</a></li>
                         <li><a th:href="@{/admin/titulo/}">Gestión de títulos</a></li>
                         <li><a th:href="@{/admin/genero/}">Gestión de géneros</a></li>
                         <li><a th:href="@{/admin/region/}">Gestión de regiones</a></li>
-                        <li><a th:href="@{/admin/importar-exportar}">Importar y exportar</a></li>
+                        <li><a th:href="@{/admin/importar-exportar}">Importar / Exportar</a></li>
                     </ul>
                 </li>
-
             </ul>
+
+            <!-- 🔥 PLATAFORMAS SOLO EN MÓVIL -->
+            <ul class="nav navbar-nav visible-xs">
+                <li class="dropdown-header">Plataformas</li>
+                <li th:each="plataforma : ${plataformas}">
+                    <a class="mobile-platform-link"
+                       th:href="@{/(idPlataforma=${plataforma.id})}"
+                       th:text="${plataforma.nombre}">
+                    </a>
+                </li>
+            </ul>
+
         </div>
     </div>
 </nav>
 
+<!-- ================= CONTENIDO ================= -->
 <div class="container-fluid">
     <div class="row">
 
-        <!-- Sidebar plataformas -->
-        <div class="col-sm-3 col-md-2 sidebar">
-            <h3>Plataformas</h3>
+        <!-- SIDEBAR PLATAFORMAS (SOLO ESCRITORIO) -->
+        <div class="col-sm-3 col-md-2 sidebar hidden-xs">
+
+            <!-- 🔥 CABECERA CON BOTÓN + -->
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <h3 style="margin:0;">Plataformas</h3>
+
+                <a th:href="@{/admin/plataforma/nueva}"
+                   class="btn btn-xs btn-primary"
+                   title="Añadir plataforma">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            </div>
+
+            <hr style="margin:10px 0;">
+
             <ul class="nav nav-sidebar">
                 <li th:each="plataforma : ${plataformas}">
                     <a th:href="@{/(idPlataforma=${plataforma.id})}"
                        th:text="${plataforma.nombre}">
-                        Plataforma
                     </a>
                 </li>
             </ul>
         </div>
 
-        <!-- Contenido principal -->
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="col-xs-12 col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
-            <h1>Nuestros títulos:</h1>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+                <h1 style="margin:0;">Algunos Títulos</h1>
+
+                <a th:href="@{/admin/titulo/nuevo}"
+                   class="btn btn-primary"
+                   title="Añadir nuevo título">
+                    <span class="glyphicon glyphicon-plus"></span> Nuevo título
+                </a>
+                <a th:href="@{/admin/genero/nueva}"
+                   class="btn btn-primary"
+                   title="Añadir nuevo genero">
+                    <span class="glyphicon glyphicon-plus"></span> Nuevo genero
+                </a>
+                <a th:href="@{/admin/region/nueva}"
+                   class="btn btn-primary"
+                   title="Añadir nueva region">
+                    <span class="glyphicon glyphicon-plus"></span> Nueva region
+                </a>
+            </div>
+
 
             <div class="row">
 
-                <!-- 🔥 CLASE game-card (CLAVE PARA EL RESPONSIVE) -->
-                <div class="game-card"
+                <!-- GRID RESPONSIVE -->
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
                      th:each="titulo : ${titulos}">
 
-                    <a th:href="@{/titulo/{id}(id=${titulo.id})}">
+                    <div class="col-item">
 
-                        <div class="col-item">
+                        <!-- 🔥 BOTÓN 3 PUNTOS -->
+                        <div class="item-actions dropdown">
+                            <button type="button"
+                                    class="btn btn-default btn-xs dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                    title="Opciones">
+                                <span class="glyphicon glyphicon-option-vertical"></span>
+                            </button>
+
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a th:href="@{/admin/titulo/editar/{id}(id=${titulo.id})}">
+                                        <span class="glyphicon glyphicon-pencil"></span> Editar
+                                    </a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a href="#"
+                                       data-toggle="modal"
+                                       data-target="#delete-modal"
+                                       th:attr="data-id=${titulo.id},data-nombre=${titulo.nombre}">
+                                        <span class="glyphicon glyphicon-trash"></span> Eliminar
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Link al detalle (solo el contenido, no toda la caja, para no interferir con el dropdown) -->
+                        <a th:href="@{/titulo/{id}(id=${titulo.id})}"
+                           style="text-decoration:none; color:inherit;">
 
                             <div class="photo">
                                 <img class="img-responsive"
@@ -119,23 +222,72 @@
                                 </h4>
                             </div>
 
-                        </div>
+                        </a>
 
-                    </a>
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
-
     </div>
 </div>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<!-- ================= MODAL BORRAR ================= -->
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
 
-<!-- Bootstrap JS -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">Eliminar título</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    ¿Estás seguro de eliminar el título
+                    <strong id="titulo-nombre"></strong>?
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cancelar
+                </button>
+                <a href="#"
+                   class="btn btn-danger"
+                   id="confirmDeleteTitulo">
+                    Eliminar
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= JS ================= -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+    // Cerrar menú hamburguesa al pulsar plataforma en móvil
+    $(document).on('click', '.mobile-platform-link', function () {
+        $('#navbarMain').collapse('hide');
+    });
+
+    // Modal borrar: rellena nombre y URL
+    $('#delete-modal').on('show.bs.modal', function (event) {
+        var link = $(event.relatedTarget);
+        var id = link.data('id');
+        var nombre = link.data('nombre');
+
+        $('#titulo-nombre').text(nombre);
+        $('#confirmDeleteTitulo').attr('href', '/admin/titulo/borrar/' + id);
+    });
+</script>
 
 </body>
 </html>

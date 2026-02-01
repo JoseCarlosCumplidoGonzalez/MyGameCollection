@@ -4,6 +4,7 @@
 
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
+    margin-top: 20px;
     padding-top: 100px;
 }
 
@@ -119,12 +120,12 @@ body {
 
 .col-item {
     border: 1px solid #E1E1E1;
-    border-radius: 5px;
+    border-radius: 30px;
     background: #FFF;
     margin-top: 30px;
 
     /* ✅ FIX solapes: NO max-height fijo */
-    min-height: 420px;
+    min-height: 490px;
     height: auto;
     overflow: hidden;
 }
@@ -363,4 +364,20 @@ body {
 }
 .row:after {
     clear: both;
+}
+
+
+/* Fuerza: el menú de plataformas de móvil NO se muestra en escritorio */
+#mobilePlatforms { display: none !important; }
+
+@media (max-width: 767px) {
+    #mobilePlatforms { display: block !important; }
+}
+
+/* Y el sidebar: solo en sm+ */
+@media (max-width: 767px) {
+    .sidebar { display: none !important; }
+}
+@media (min-width: 768px) {
+    .sidebar { display: block !important; }
 }
