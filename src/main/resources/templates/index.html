@@ -145,9 +145,14 @@
         <!-- CONTENIDO PRINCIPAL -->
         <div class="col-xs-12 col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
+            <!-- Espacio extra en móvil -->
+            <div class="visible-xs" style="height:30px;"></div>
+
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
                 <h1 style="margin:0;">Algunos Títulos</h1>
+            </div>
 
+            <div>
                 <a th:href="@{/admin/titulo/nuevo}"
                    class="btn btn-primary"
                    title="Añadir nuevo título">
